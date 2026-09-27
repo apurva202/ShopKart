@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
 import homeBg from "../assets/home.png";
@@ -33,6 +34,7 @@ const getInitials = (name = "") => {
 };
 
 const Home = () => {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const memberSince = formatDate(user.createdAt);
 
@@ -151,7 +153,8 @@ const Home = () => {
             </div>
             <button
               id="browse-products-btn"
-              className="bg-[#B45309] text-white border-none rounded-[0.6rem] px-[1.3rem] py-[0.65rem] font-semibold text-[0.875rem] cursor-default flex items-center gap-[0.45rem] whitespace-nowrap shrink-0 font-inherit"
+              onClick={() => navigate("/products")}
+              className="bg-[#B45309] hover:bg-[#92400E] text-white border-none rounded-[0.6rem] px-[1.3rem] py-[0.65rem] font-semibold text-[0.875rem] cursor-pointer flex items-center gap-[0.45rem] whitespace-nowrap shrink-0 font-inherit transition-colors"
             >
               Browse Products
               <ArrowRight size={15} strokeWidth={2.5} />

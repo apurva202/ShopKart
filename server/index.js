@@ -9,6 +9,7 @@ const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const customerRoutes = require("./routes/customer.routes");
+const productRoutes = require("./routes/product.routes");
 
 const app = express();
 const Port = 8085;
@@ -25,6 +26,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/customers", customerRoutes);
+app.use("/products", productRoutes);
 
 async function startServer() {
   try {

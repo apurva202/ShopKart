@@ -1,10 +1,9 @@
 import { useState, useRef, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import {
   ShoppingCart,
   Home,
   LayoutGrid,
-  Search,
   ChevronDown,
   LogOut,
 } from "lucide-react";
@@ -20,9 +19,12 @@ const getInitials = (name = "") => {
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, setUser } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const isHome = location.pathname === "/home";
+  const isProducts = location.pathname.startsWith("/products");
 
   const handleLogout = async () => {
     try {
@@ -47,45 +49,48 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="w-full bg-white border-b border-[#E5DED5] shadow-[0_1px_8px_rgba(0,0,0,0.06)] px-7 py-3 flex items-center gap-6 sticky top-0 z-50 font-sans box-border">
-      {/* ── Logo — text only ── */}
-      <Link
-        to="/home"
-        className="flex items-center no-underline shrink-0"
-      >
-        <span className="text-[1.35rem] font-extrabold tracking-[-0.01em]">
-          <span className="text-[#292524]">Shop</span>
-          <span className="text-[#D97706]">Kart</span>
-        </span>
-      </Link>
-
-      {/* ── Nav Links ── */}
-      <div className="flex items-center gap-1 shrink-0">
-        {/* Home — active */}
+    <nav className="w-full bg-white border-b border-[#E5DED5] shadow-[0_1px_8px_rgba(0,0,0,0.06)] px-7 py-3 flex items-center justify-between sticky top-0 z-50 font-sans box-border">
+      {/* ── Left Side: Logo + Nav Links ── */}
+      <div className="flex items-center gap-6 shrink-0">
+        {/* ── Logo — text only ── */}
         <Link
           to="/home"
-          className="flex items-center gap-[0.35rem] px-[0.85rem] py-[0.4rem] rounded-lg bg-[#FEF3E2] border border-[#E5DED5] no-underline text-[0.875rem] font-semibold text-[#B45309]"
+          className="flex items-center no-underline shrink-0"
         >
-          <Home size={15} strokeWidth={2} />
-          Home
+          <span className="text-[1.35rem] font-extrabold tracking-[-0.01em]">
+            <span className="text-[#292524]">Shop</span>
+            <span className="text-[#D97706]">Kart</span>
+          </span>
         </Link>
 
-        {/* Products — static, no route yet */}
-        <span className="flex items-center gap-[0.35rem] px-[0.85rem] py-[0.4rem] rounded-lg text-[0.875rem] font-medium text-[#78716C] cursor-default">
-          <LayoutGrid size={15} strokeWidth={2} />
-          Products
-        </span>
-      </div>
+        {/* ── Nav Links ── */}
+        <div className="flex items-center gap-1 shrink-0">
+          {/* Home */}
+          <Link
+            to="/home"
+            className={`flex items-center gap-[0.35rem] px-[0.85rem] py-[0.4rem] rounded-lg no-underline text-[0.875rem] transition-colors ${
+              isHome
+                ? "bg-[#FEF3E2] border border-[#E5DED5] font-semibold text-[#B45309]"
+                : "text-[#78716C] hover:text-[#292524] font-medium"
+            }`}
+          >
+            <Home size={15} strokeWidth={2} />
+            Home
+          </Link>
 
-      {/* ── Search Bar ── */}
-      <div className="flex-1 flex items-center gap-[0.6rem] bg-[#FAF7F2] border border-[#E5DED5] rounded-full px-4 py-[0.45rem]">
-        <Search size={15} color="#78716C" strokeWidth={2} />
-        <input
-          id="navbar-search"
-          type="text"
-          placeholder="Search for products, brands and more..."
-          className="flex-1 border-none bg-transparent outline-none text-[0.85rem] text-[#292524] placeholder:text-[#78716C] font-inherit"
-        />
+          {/* Products */}
+          <Link
+            to="/products"
+            className={`flex items-center gap-[0.35rem] px-[0.85rem] py-[0.4rem] rounded-lg no-underline text-[0.875rem] transition-colors ${
+              isProducts
+                ? "bg-[#FEF3E2] border border-[#E5DED5] font-semibold text-[#B45309]"
+                : "text-[#78716C] hover:text-[#292524] font-medium"
+            }`}
+          >
+            <LayoutGrid size={15} strokeWidth={2} />
+            Products
+          </Link>
+        </div>
       </div>
 
       {/* ── Right Side ── */}
