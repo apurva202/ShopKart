@@ -41,8 +41,26 @@ const Products = () => {
   // Toast Notification State
   const [toastMessage, setToastMessage] = useState(null);
 
+  // Track wishlisted product IDs
+  const [wishlistIds, setWishlistIds] = useState(new Set());
+
   // Ref for auto-scrolling to top on pagination change
   const cardsContainerRef = useRef(null);
+
+  // Fetch wishlisted products on mount
+  useEffect(() => {
+    const fetchWishlist = async () => {
+      try {
+        const res = await api.get("/wishlist");
+        if (res.data && res.data.success && Array.isArray(res.data.wishlist)) {
+          setWishlistIds(new Set(res.data.wishlist.map((item) => item._id)));
+        }
+      } catch (err) {
+        // silent fail if unauthenticated or network error
+      }
+    };
+    fetchWishlist();
+  }, []);
 
   // Auto-scroll cards container to top when page changes
   useEffect(() => {
@@ -373,6 +391,21 @@ const Products = () => {
                       <ProductCard
                         key={prod._id}
                         product={prod}
+                        initialWishlisted={wishlistIds.has(prod._id)}
+                        onWishlistToggle={(id, isSaved) => {
+                          setWishlistIds((prev) => {
+                            const updated = new Set(prev);
+                            if (isSaved) updated.add(id);
+                            else updated.delete(id);
+                            return updated;
+                          });
+                          setToastMessage(
+                            isSaved
+                              ? `Added "${prod.name}" to Wishlist!`
+                              : `Removed "${prod.name}" from Wishlist`
+                          );
+                          setTimeout(() => setToastMessage(null), 3000);
+                        }}
                         onAddToCart={handleAddToCart}
                       />
                     ))}

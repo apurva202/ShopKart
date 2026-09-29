@@ -1,10 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Heart, ShoppingCart } from "lucide-react";
+import api from "../services/api";
 
-const ProductCard = ({ product, onAddToCart }) => {
+const ProductCard = ({
+  product,
+  onAddToCart,
+  initialWishlisted = false,
+  onWishlistToggle,
+}) => {
   const navigate = useNavigate();
-  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [isWishlisted, setIsWishlisted] = useState(initialWishlisted);
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    setIsWishlisted(initialWishlisted);
+  }, [initialWishlisted]);
 
   if (!product) return null;
 
@@ -15,9 +26,38 @@ const ProductCard = ({ product, onAddToCart }) => {
     navigate(`/products/${product._id}`);
   };
 
-  const handleWishlistClick = (e) => {
+  const handleWishlistClick = async (e) => {
     e.stopPropagation();
-    setIsWishlisted((prev) => !prev);
+    if (isSaving) return;
+
+    setIsSaving(true);
+    try {
+      if (isWishlisted) {
+        // Remove from wishlist
+        const res = await api.delete(`/wishlist/${product._id}`);
+        if (res.data && res.data.success) {
+          setIsWishlisted(false);
+          if (onWishlistToggle) onWishlistToggle(product._id, false);
+        }
+      } else {
+        // Add to wishlist
+        const res = await api.post(`/wishlist/${product._id}`);
+        if (res.data && res.data.success) {
+          setIsWishlisted(true);
+          if (onWishlistToggle) onWishlistToggle(product._id, true);
+        }
+      }
+    } catch (err) {
+      if (err.response && err.response.status === 409) {
+        // Already in wishlist
+        setIsWishlisted(true);
+        if (onWishlistToggle) onWishlistToggle(product._id, true);
+      } else {
+        console.error("Wishlist action failed:", err);
+      }
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleCartClick = (e) => {
@@ -45,9 +85,12 @@ const ProductCard = ({ product, onAddToCart }) => {
         {/* Wishlist Heart Button */}
         <button
           type="button"
+          disabled={isSaving}
           onClick={handleWishlistClick}
-          aria-label="Add to wishlist"
-          className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/95 hover:bg-white shadow-[0_2px_6px_rgba(0,0,0,0.12)] border border-black/5 flex items-center justify-center transition-transform active:scale-90"
+          aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+          className={`absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/95 hover:bg-white shadow-[0_2px_6px_rgba(0,0,0,0.12)] border border-black/5 flex items-center justify-center transition-transform active:scale-90 ${
+            isSaving ? "opacity-70 cursor-wait" : "cursor-pointer"
+          }`}
         >
           <Heart
             size={16}

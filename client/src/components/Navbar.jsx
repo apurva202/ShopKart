@@ -4,6 +4,7 @@ import {
   ShoppingCart,
   Home,
   LayoutGrid,
+  Heart,
   ChevronDown,
   LogOut,
 } from "lucide-react";
@@ -25,6 +26,7 @@ const Navbar = () => {
   const dropdownRef = useRef(null);
   const isHome = location.pathname === "/home";
   const isProducts = location.pathname.startsWith("/products");
+  const isWishlist = location.pathname === "/wishlist";
 
   const handleLogout = async () => {
     try {
@@ -89,6 +91,19 @@ const Navbar = () => {
           >
             <LayoutGrid size={15} strokeWidth={2} />
             Products
+          </Link>
+
+          {/* Wishlist */}
+          <Link
+            to="/wishlist"
+            className={`flex items-center gap-[0.35rem] px-[0.85rem] py-[0.4rem] rounded-lg no-underline text-[0.875rem] transition-colors ${
+              isWishlist
+                ? "bg-[#FEF3E2] border border-[#E5DED5] font-semibold text-[#B45309]"
+                : "text-[#78716C] hover:text-[#292524] font-medium"
+            }`}
+          >
+            <Heart size={15} strokeWidth={2} className={isWishlist ? "fill-[#B45309]" : ""} />
+            Wishlist
           </Link>
         </div>
       </div>

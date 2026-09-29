@@ -24,6 +24,7 @@ const ProductDetails = () => {
 
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const [isSavingWishlist, setIsSavingWishlist] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
 
   useEffect(() => {
@@ -51,8 +52,52 @@ const ProductDetails = () => {
       }
     };
 
+    const checkWishlist = async () => {
+      try {
+        const res = await api.get("/wishlist");
+        if (res.data && res.data.success && Array.isArray(res.data.wishlist)) {
+          const isSaved = res.data.wishlist.some((item) => item._id === id);
+          setIsWishlisted(isSaved);
+        }
+      } catch (err) {
+        // silent fail if unauthenticated or network error
+      }
+    };
+
     fetchProduct();
+    checkWishlist();
   }, [id]);
+
+  const handleWishlistToggle = async () => {
+    if (!product || isSavingWishlist) return;
+
+    setIsSavingWishlist(true);
+    try {
+      if (isWishlisted) {
+        const res = await api.delete(`/wishlist/${product._id}`);
+        if (res.data && res.data.success) {
+          setIsWishlisted(false);
+          setToastMessage(`Removed "${product.name}" from Wishlist`);
+        }
+      } else {
+        const res = await api.post(`/wishlist/${product._id}`);
+        if (res.data && res.data.success) {
+          setIsWishlisted(true);
+          setToastMessage(`Added "${product.name}" to Wishlist!`);
+        }
+      }
+    } catch (err) {
+      if (err.response && err.response.status === 409) {
+        setIsWishlisted(true);
+        setToastMessage(`"${product.name}" is already in Wishlist!`);
+      } else {
+        console.error("Failed to update wishlist:", err);
+      }
+    } finally {
+      setIsSavingWishlist(false);
+      setTimeout(() => setToastMessage(null), 3000);
+    }
+  };
 
   const handleAddToCart = () => {
     if (!product || product.stock === 0) return;
@@ -138,9 +183,12 @@ const ProductDetails = () => {
               />
               <button
                 type="button"
-                onClick={() => setIsWishlisted((prev) => !prev)}
-                aria-label="Wishlist"
-                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/95 hover:bg-white shadow-[0_2px_8px_rgba(0,0,0,0.12)] border border-black/5 flex items-center justify-center transition-transform active:scale-90 cursor-pointer"
+                disabled={isSavingWishlist}
+                onClick={handleWishlistToggle}
+                aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+                className={`absolute top-4 right-4 w-10 h-10 rounded-full bg-white/95 hover:bg-white shadow-[0_2px_8px_rgba(0,0,0,0.12)] border border-black/5 flex items-center justify-center transition-transform active:scale-90 ${
+                  isSavingWishlist ? "opacity-70 cursor-wait" : "cursor-pointer"
+                }`}
               >
                 <Heart
                   size={19}
