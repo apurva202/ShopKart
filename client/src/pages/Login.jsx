@@ -44,7 +44,6 @@ const Login = () => {
       className="flex h-screen overflow-hidden font-sans"
       style={{ backgroundColor: "#FAF7F2" }}
     >
-      {/* ── LEFT PANEL ── */}
       <div
         className="hidden lg:block w-[50%] shrink-0"
         style={{
@@ -54,18 +53,15 @@ const Login = () => {
         }}
       />
 
-      {/* ── RIGHT PANEL ── */}
       <div
         className="flex flex-1 h-full overflow-y-auto items-center justify-center px-8 py-12"
         style={{ backgroundColor: "#FAF7F2" }}
       >
-        <div className="w-full max-w-112.5  bg-white rounded-2xl shadow-lg px-10 py-10">
-          {/* Eyebrow */}
+        <div className="w-full max-w-112.5 bg-white rounded-2xl shadow-lg px-10 py-10">
           <p className="text-xs font-bold tracking-[2.5px] uppercase text-amber-600 mb-2.5">
             Welcome Back
           </p>
 
-          {/* Title */}
           <h2 className="text-[28px] font-extrabold text-stone-900 tracking-tight mb-1.5">
             Glad to see you again
           </h2>
@@ -73,7 +69,6 @@ const Login = () => {
             Sign in to continue to ShopKart
           </p>
 
-          {/* Error Banner */}
           {error && (
             <div className="flex items-center gap-3 bg-red-50 border border-red-200 text-red-700 text-sm font-medium rounded-xl px-4 py-3 mb-5 shadow-sm">
               <svg
@@ -93,7 +88,6 @@ const Login = () => {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Email */}
             <div>
               <label className="block text-[13px] font-semibold text-stone-800 mb-1.5">
                 Email address
@@ -128,7 +122,6 @@ const Login = () => {
               </div>
             </div>
 
-            {/* Password */}
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label className="text-[13px] font-semibold text-stone-800">
@@ -211,7 +204,6 @@ const Login = () => {
 
             <br />
 
-            {/* Submit Button */}
             <button
               id="login-btn"
               type="submit"
@@ -264,10 +256,8 @@ const Login = () => {
             </button>
           </form>
 
-          {/* Divider */}
           <hr className="border-stone-100 mt-6 mb-5" />
 
-          {/* Footer Link */}
           <p className="text-center text-stone-500 text-sm">
             Don't have an account?{" "}
             <Link

@@ -13,6 +13,7 @@ const ProductCard = ({
   const [isWishlisted, setIsWishlisted] = useState(initialWishlisted);
   const [isSaving, setIsSaving] = useState(false);
 
+  // Sync if parent updates the prop (e.g. wishlist loaded after mount)
   useEffect(() => {
     setIsWishlisted(initialWishlisted);
   }, [initialWishlisted]);
@@ -33,14 +34,12 @@ const ProductCard = ({
     setIsSaving(true);
     try {
       if (isWishlisted) {
-        // Remove from wishlist
         const res = await api.delete(`/wishlist/${product._id}`);
         if (res.data && res.data.success) {
           setIsWishlisted(false);
           if (onWishlistToggle) onWishlistToggle(product._id, false);
         }
       } else {
-        // Add to wishlist
         const res = await api.post(`/wishlist/${product._id}`);
         if (res.data && res.data.success) {
           setIsWishlisted(true);
@@ -49,7 +48,7 @@ const ProductCard = ({
       }
     } catch (err) {
       if (err.response && err.response.status === 409) {
-        // Already in wishlist
+        // 409 means already wishlisted — sync state
         setIsWishlisted(true);
         if (onWishlistToggle) onWishlistToggle(product._id, true);
       } else {
@@ -73,7 +72,6 @@ const ProductCard = ({
       onClick={handleCardClick}
       className="bg-white rounded-2xl border border-[#E5DED5] p-3.5 flex flex-col justify-between shadow-[0_1px_6px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition-all duration-200 group cursor-pointer"
     >
-      {/* ── Product Image Container ── */}
       <div className="relative w-full aspect-4/3 bg-[#F7F5F0] rounded-xl overflow-hidden flex items-center justify-center">
         <img
           src={product.image}
@@ -82,7 +80,6 @@ const ProductCard = ({
           loading="lazy"
         />
 
-        {/* Wishlist Heart Button */}
         <button
           type="button"
           disabled={isSaving}
@@ -104,9 +101,7 @@ const ProductCard = ({
         </button>
       </div>
 
-      {/* ── Product Details ── */}
       <div className="mt-3 flex-1 flex flex-col">
-        {/* Title */}
         <h3
           title={product.name}
           className="m-0 font-semibold text-[#1C1917] text-[0.95rem] line-clamp-1 group-hover:text-[#B45309] transition-colors leading-snug"
@@ -114,17 +109,14 @@ const ProductCard = ({
           {product.name}
         </h3>
 
-        {/* Category */}
         <p className="m-0 mt-0.5 text-xs text-[#78716C] font-normal">
           {product.category}
         </p>
 
-        {/* Price */}
         <p className="m-0 mt-1.5 text-[#DC2626] font-bold text-[1.15rem] leading-none tracking-tight">
           ₹{Number(product.price).toLocaleString("en-IN")}
         </p>
 
-        {/* Stock Status Indicator */}
         <div className="mt-2 flex items-center gap-1.5 text-xs font-medium">
           {isOutOfStock ? (
             <>
@@ -145,7 +137,6 @@ const ProductCard = ({
         </div>
       </div>
 
-      {/* ── Add to Cart Button ── */}
       <button
         type="button"
         disabled={isOutOfStock}

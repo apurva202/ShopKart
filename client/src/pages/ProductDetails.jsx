@@ -112,12 +112,9 @@ const ProductDetails = () => {
 
   return (
     <div className="bg-[#FAF7F2] min-h-screen flex flex-col font-sans text-[#1C1917]">
-      {/* ── Existing Navbar ── */}
       <Navbar />
 
-      {/* ── Content ── */}
       <main className="flex-1 max-w-6xl w-full mx-auto px-6 sm:px-8 py-8 box-border">
-        {/* ── Breadcrumb & Back button ── */}
         <div className="flex items-center justify-between gap-4 mb-6">
           <button
             type="button"
@@ -137,7 +134,6 @@ const ProductDetails = () => {
           </nav>
         </div>
 
-        {/* ── Loading State ── */}
         {loading && (
           <div className="bg-white rounded-2xl border border-[#E5DED5] p-8 md:p-12 shadow-[0_1px_6px_rgba(0,0,0,0.03)] grid grid-cols-1 md:grid-cols-2 gap-10 animate-pulse">
             <div className="w-full aspect-4/3 bg-[#E7E5E4] rounded-2xl" />
@@ -151,7 +147,6 @@ const ProductDetails = () => {
           </div>
         )}
 
-        {/* ── Error State ── */}
         {!loading && error && (
           <div className="bg-white rounded-2xl border border-[#FECACA] p-12 text-center my-6 flex flex-col items-center justify-center">
             <div className="w-14 h-14 rounded-full bg-[#FEE2E2] flex items-center justify-center text-[#DC2626] mb-3">
@@ -171,10 +166,8 @@ const ProductDetails = () => {
           </div>
         )}
 
-        {/* ── Product Showcase ── */}
         {!loading && !error && product && (
           <div className="bg-white rounded-2xl border border-[#E5DED5] p-6 sm:p-10 shadow-[0_2px_12px_rgba(0,0,0,0.04)] grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
-            {/* ── Left: Image Card ── */}
             <div className="relative w-full aspect-4/3 sm:aspect-square max-h-115 bg-[#F7F5F0] rounded-2xl overflow-hidden border border-[#E5DED5] flex items-center justify-center">
               <img
                 src={product.image}
@@ -202,19 +195,15 @@ const ProductDetails = () => {
               </button>
             </div>
 
-            {/* ── Right: Details ── */}
             <div className="flex flex-col">
-              {/* Category Badge */}
               <div className="inline-block self-start px-3 py-1 rounded-lg bg-[#FEF3E2] text-[#B45309] text-xs font-semibold uppercase tracking-wider mb-2">
                 {product.category}
               </div>
 
-              {/* Title */}
               <h1 className="m-0 font-bold text-[#1C1917] text-2xl sm:text-3xl leading-tight">
                 {product.name}
               </h1>
 
-              {/* Price */}
               <div className="mt-3 flex items-baseline gap-3">
                 <span className="text-[#DC2626] font-bold text-3xl tracking-tight leading-none">
                   ₹{Number(product.price).toLocaleString("en-IN")}
@@ -222,7 +211,6 @@ const ProductDetails = () => {
                 <span className="text-xs text-[#78716C]">Inclusive of all taxes</span>
               </div>
 
-              {/* Stock Status Indicator */}
               <div className="mt-4 flex items-center gap-2 text-sm font-medium">
                 {isOutOfStock ? (
                   <>
@@ -246,10 +234,8 @@ const ProductDetails = () => {
                 )}
               </div>
 
-              {/* Divider */}
               <div className="h-px bg-[#E5DED5] my-6" />
 
-              {/* Description */}
               <div>
                 <h3 className="m-0 text-sm font-bold uppercase tracking-wider text-[#78716C] mb-2">
                   About this item
@@ -259,12 +245,9 @@ const ProductDetails = () => {
                 </p>
               </div>
 
-              {/* Divider */}
               <div className="h-px bg-[#E5DED5] my-6" />
 
-              {/* Quantity Selector + Add to Cart */}
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-                {/* Quantity Controls */}
                 {!isOutOfStock && (
                   <div className="flex items-center border border-[#E5DED5] rounded-xl bg-[#FAF7F2] p-1 self-start">
                     <button
@@ -289,7 +272,6 @@ const ProductDetails = () => {
                   </div>
                 )}
 
-                {/* Add to Cart Button */}
                 <button
                   type="button"
                   disabled={isOutOfStock}
@@ -305,7 +287,6 @@ const ProductDetails = () => {
                 </button>
               </div>
 
-              {/* Trust Badges */}
               <div className="mt-8 pt-6 border-t border-[#E5DED5] grid grid-cols-3 gap-3">
                 <div className="flex flex-col items-center text-center p-2 rounded-xl bg-[#FAF7F2]">
                   <Truck size={18} className="text-[#B45309] mb-1" />
@@ -328,7 +309,6 @@ const ProductDetails = () => {
         )}
       </main>
 
-      {/* ── Toast Feedback Notification ── */}
       {toastMessage && (
         <div className="fixed bottom-6 right-6 bg-[#292524] text-white px-5 py-3 rounded-xl shadow-xl flex items-center gap-3 z-50 text-sm font-medium animate-bounce">
           <Check size={16} className="text-[#16A34A]" />
@@ -336,7 +316,6 @@ const ProductDetails = () => {
         </div>
       )}
 
-      {/* ── Quote-Only Footer (Strictly Quote, No Extra Links) ── */}
       <footer className="text-center px-4 py-8 mt-12 pb-6">
         <div className="flex items-center justify-center gap-3">
           <div className="flex-1 max-w-20 h-px bg-black" />

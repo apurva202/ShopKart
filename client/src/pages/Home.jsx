@@ -88,11 +88,8 @@ const Home = () => {
 
   return (
     <div className="flex flex-col min-h-screen font-sans">
-
-      {/* Navbar — sits above the bg */}
       <Navbar />
 
-      {/* Content area — bg image only here */}
       <div
         className="flex-1 bg-cover bg-no-repeat flex flex-col"
         style={{
@@ -100,13 +97,8 @@ const Home = () => {
           backgroundPosition: "top center",
         }}
       >
-
-        {/* Cards — left-aligned, overlaid on bg */}
         <div className="px-10 py-8 max-w-184">
-
-          {/* ── Profile Card ── */}
           <div className="bg-white rounded-2xl px-8 py-7 border border-[#E5DED5] shadow-[0_8px_32px_rgba(0,0,0,0.10)] mb-5">
-            {/* Header: avatar + title */}
             <div className="flex items-center gap-4 mb-6">
               <div className="w-13 h-13 rounded-full bg-[#FEF3E2] border-2 border-[#D97706] flex items-center justify-center text-[1.25rem] font-bold text-[#B45309] shrink-0 tracking-wider">
                 {getInitials(user.fullName)}
@@ -121,7 +113,6 @@ const Home = () => {
               </div>
             </div>
 
-            {/* Info rows */}
             {infoRows.map((row, idx) => (
               <div key={row.id}>
                 <div className="grid grid-cols-[1.5rem_9rem_1fr] items-center gap-4 py-[0.85rem]">
@@ -138,7 +129,6 @@ const Home = () => {
             ))}
           </div>
 
-          {/* ── CTA Card ── */}
           <div className="bg-[#FEF3E2] rounded-2xl px-7 py-5 border border-[#E5DED5] flex items-center gap-5 shadow-[0_4px_16px_rgba(0,0,0,0.07)]">
             <div className="w-12 h-12 rounded-full bg-[#FDE8C8] border border-[#D97706] flex items-center justify-center shrink-0 text-[#B45309]">
               <ShoppingBag size={20} strokeWidth={1.5} />
@@ -162,7 +152,6 @@ const Home = () => {
           </div>
         </div>
 
-        {/* ── Features Strip ── */}
         <div className="px-8 pb-3">
           <div className="bg-white border border-[#E5DED5] rounded-[0.875rem] shadow-[0_2px_16px_rgba(0,0,0,0.08)] grid grid-cols-4 overflow-hidden">
             {features.map((feat, idx) => (
@@ -195,7 +184,6 @@ const Home = () => {
           </div>
         </div>
 
-        {/* ── Footer Quote — right below features, dark text ── */}
         <div className="text-center px-4 py-3.5 pb-5">
           <div className="flex items-center justify-center gap-3">
             <div className="flex-1 max-w-20 h-px bg-black" />
@@ -208,9 +196,7 @@ const Home = () => {
             — ShopKart
           </p>
         </div>
-
       </div>
-      {/* end bg-image content area */}
     </div>
   );
 };

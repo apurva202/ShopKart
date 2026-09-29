@@ -2,12 +2,10 @@ const mongoose = require("mongoose");
 const Customer = require("../models/customer.model");
 const Product = require("../models/product.model");
 
-// Task 2: Add Product to Wishlist (POST /wishlist/:productId)
 const addToWishlist = async (req, res) => {
   try {
     const { productId } = req.params;
 
-    // 1. Validate MongoDB ObjectId format
     if (!mongoose.isValidObjectId(productId)) {
       return res.status(400).json({
         success: false,
@@ -15,7 +13,6 @@ const addToWishlist = async (req, res) => {
       });
     }
 
-    // 2. Validate product exists in DB
     const product = await Product.findById(productId);
     if (!product) {
       return res.status(404).json({
@@ -24,7 +21,6 @@ const addToWishlist = async (req, res) => {
       });
     }
 
-    // 3. Find customer
     const customer = await Customer.findById(req.user._id);
     if (!customer) {
       return res.status(404).json({
@@ -33,7 +29,6 @@ const addToWishlist = async (req, res) => {
       });
     }
 
-    // 4. Check for duplicate entries
     const alreadyWishlisted = customer.wishlist.some(
       (id) => id.toString() === productId
     );
@@ -45,7 +40,6 @@ const addToWishlist = async (req, res) => {
       });
     }
 
-    // 5. Add product reference and save
     customer.wishlist.push(productId);
     await customer.save();
 
@@ -58,7 +52,6 @@ const addToWishlist = async (req, res) => {
   }
 };
 
-// Task 3: Get Current User's Wishlist (GET /wishlist)
 const getWishlist = async (req, res) => {
   try {
     const customer = await Customer.findById(req.user._id).populate({
@@ -73,7 +66,7 @@ const getWishlist = async (req, res) => {
       });
     }
 
-    // Filter out null values in case any referenced product was deleted from DB
+    // Filter out nulls in case a referenced product was deleted from DB
     const validWishlist = customer.wishlist.filter((item) => item !== null);
 
     return res.status(200).json({
@@ -86,12 +79,10 @@ const getWishlist = async (req, res) => {
   }
 };
 
-// Task 4: Remove Product from Wishlist (DELETE /wishlist/:productId)
 const removeFromWishlist = async (req, res) => {
   try {
     const { productId } = req.params;
 
-    // 1. Validate MongoDB ObjectId format
     if (!mongoose.isValidObjectId(productId)) {
       return res.status(400).json({
         success: false,
@@ -107,7 +98,6 @@ const removeFromWishlist = async (req, res) => {
       });
     }
 
-    // 2. Check if product is currently in wishlist
     const productIndex = customer.wishlist.findIndex(
       (id) => id.toString() === productId
     );
@@ -119,7 +109,6 @@ const removeFromWishlist = async (req, res) => {
       });
     }
 
-    // 3. Remove product reference and save
     customer.wishlist.splice(productIndex, 1);
     await customer.save();
 

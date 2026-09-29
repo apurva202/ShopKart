@@ -23,14 +23,13 @@ const CATEGORIES = [
   { id: "Beauty", label: "Beauty" },
 ];
 
-const ITEMS_PER_PAGE = 8; // 4x2 grid to match mockup
+const ITEMS_PER_PAGE = 8;
 
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Filter States
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [category, setCategory] = useState("all");
@@ -38,16 +37,11 @@ const Products = () => {
   const [inStockOnly, setInStockOnly] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Toast Notification State
   const [toastMessage, setToastMessage] = useState(null);
-
-  // Track wishlisted product IDs
   const [wishlistIds, setWishlistIds] = useState(new Set());
 
-  // Ref for auto-scrolling to top on pagination change
   const cardsContainerRef = useRef(null);
 
-  // Fetch wishlisted products on mount
   useEffect(() => {
     const fetchWishlist = async () => {
       try {
@@ -62,14 +56,12 @@ const Products = () => {
     fetchWishlist();
   }, []);
 
-  // Auto-scroll cards container to top when page changes
   useEffect(() => {
     if (cardsContainerRef.current) {
       cardsContainerRef.current.scrollTo({ top: 0, behavior: "smooth" });
     }
   }, [currentPage]);
 
-  // Debounce search input by 500ms
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(search);
@@ -78,7 +70,6 @@ const Products = () => {
     return () => clearTimeout(timer);
   }, [search]);
 
-  // Fetch products from backend API
   const fetchProducts = async () => {
     setLoading(true);
     setError(null);
@@ -112,13 +103,11 @@ const Products = () => {
     fetchProducts();
   }, [debouncedSearch, category, sort]);
 
-  // Apply client-side availability filter
   const filteredProducts = useMemo(() => {
     if (!inStockOnly) return products;
     return products.filter((p) => p.stock > 0);
   }, [products, inStockOnly]);
 
-  // Pagination calculation
   const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE) || 1;
   const paginatedProducts = useMemo(() => {
     const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -143,14 +132,10 @@ const Products = () => {
 
   return (
     <div className="bg-[#FAF7F2] h-screen flex flex-col font-sans text-[#1C1917] overflow-hidden">
-      {/* ── Existing Navbar ── */}
       <Navbar />
 
-      {/* ── Main Container (Fixed viewport height) ── */}
       <main className="flex-1 flex flex-col max-w-7xl w-full mx-auto px-6 sm:px-8 pt-6 pb-2 min-h-0 overflow-hidden box-border">
-        {/* ── Page Header: Title + Search & Sort (Fixed) ── */}
         <div className="shrink-0 flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-5">
-          {/* Title and Subtitle */}
           <div>
             <h1 className="m-0 font-serif text-[2.25rem] sm:text-[2.6rem] font-bold text-[#1C1917] tracking-tight leading-none">
               Products
@@ -160,9 +145,7 @@ const Products = () => {
             </p>
           </div>
 
-          {/* Controls: Search Bar + Sort Dropdown */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
-            {/* Search Input */}
             <div className="relative flex-1 sm:w-80 md:w-96 flex items-center bg-white border border-[#E5DED5] rounded-xl px-3.5 py-2 shadow-[0_1px_4px_rgba(0,0,0,0.03)] focus-within:border-[#D97706] focus-within:ring-1 focus-within:ring-[#D97706] transition-all">
               <Search size={17} className="text-[#78716C] shrink-0 mr-2.5" />
               <input
@@ -184,7 +167,6 @@ const Products = () => {
               )}
             </div>
 
-            {/* Sort Dropdown */}
             <div className="relative shrink-0">
               <select
                 id="products-sort-select"
@@ -207,15 +189,12 @@ const Products = () => {
           </div>
         </div>
 
-        {/* ── Main Two-Column Layout ── */}
         <div className="flex-1 grid grid-cols-1 lg:grid-cols-[15.5rem_1fr] gap-8 items-start min-h-0 overflow-hidden pb-1">
-          {/* ── Left Sidebar (Fixed Filters) ── */}
           <aside className="bg-white rounded-2xl border border-[#E5DED5] p-5 shadow-[0_1px_6px_rgba(0,0,0,0.03)] shrink-0 overflow-y-auto max-h-full [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#E5DED5] [&::-webkit-scrollbar-thumb]:rounded-full">
             <h2 className="m-0 text-base font-bold text-[#1C1917] mb-4 tracking-tight">
               Filters
             </h2>
 
-            {/* Category Filter */}
             <div>
               <h3 className="m-0 text-sm font-semibold text-[#1C1917] mb-2.5">
                 Category
@@ -237,7 +216,6 @@ const Products = () => {
                           : "bg-transparent text-[#57534E] hover:bg-[#FAF7F2] font-normal"
                       }`}
                     >
-                      {/* Custom Radio Button */}
                       <span
                         className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 border-2 transition-colors ${
                           isSelected ? "border-[#D97706]" : "border-[#D6D3D1]"
@@ -254,10 +232,8 @@ const Products = () => {
               </div>
             </div>
 
-            {/* Divider */}
             <div className="h-px bg-[#E5DED5] my-4" />
 
-            {/* Availability Filter */}
             <div>
               <h3 className="m-0 text-sm font-semibold text-[#1C1917] mb-2.5">
                 Availability
@@ -285,10 +261,8 @@ const Products = () => {
               </label>
             </div>
 
-            {/* Divider */}
             <div className="h-px bg-[#E5DED5] my-4" />
 
-            {/* Clear Filters Button */}
             <button
               type="button"
               onClick={handleClearFilters}
@@ -299,9 +273,7 @@ const Products = () => {
             </button>
           </aside>
 
-          {/* ── Right Content Area ── */}
           <div className="h-full flex flex-col min-h-0 overflow-hidden">
-            {/* Products Count Indicator (Fixed above red line) */}
             <div className="mb-3 shrink-0 flex items-center justify-between">
               <span className="text-sm text-[#78716C] font-medium">
                 {loading
@@ -312,12 +284,10 @@ const Products = () => {
               </span>
             </div>
 
-            {/* ── Scrollable Card Area (Under Red Line) ── */}
             <div
               ref={cardsContainerRef}
               className="flex-1 overflow-y-auto min-h-0 pr-2 pb-8 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#E5DED5] [&::-webkit-scrollbar-thumb]:rounded-full"
             >
-              {/* ── State 1: Loading Skeleton ── */}
               {loading && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
                   {Array.from({ length: 8 }).map((_, idx) => (
@@ -338,7 +308,6 @@ const Products = () => {
                 </div>
               )}
 
-              {/* ── State 2: Error State ── */}
               {!loading && error && (
                 <div className="bg-white rounded-2xl border border-[#FECACA] p-8 text-center my-6 flex flex-col items-center justify-center">
                   <div className="w-12 h-12 rounded-full bg-[#FEE2E2] flex items-center justify-center text-[#DC2626] mb-3">
@@ -360,7 +329,6 @@ const Products = () => {
                 </div>
               )}
 
-              {/* ── State 3: Empty State ── */}
               {!loading && !error && filteredProducts.length === 0 && (
                 <div className="bg-white rounded-2xl border border-[#E5DED5] p-12 text-center my-6 flex flex-col items-center justify-center">
                   <div className="w-16 h-16 rounded-full bg-[#FEF3E2] border border-[#E5DED5] flex items-center justify-center text-[#B45309] mb-4">
@@ -383,7 +351,6 @@ const Products = () => {
                 </div>
               )}
 
-              {/* ── State 4: Products Grid ── */}
               {!loading && !error && paginatedProducts.length > 0 && (
                 <>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
@@ -411,10 +378,8 @@ const Products = () => {
                     ))}
                   </div>
 
-                  {/* ── Centered Pagination Controls ── */}
                   {totalPages > 1 && (
                     <div className="flex items-center justify-center gap-2 mt-10 mb-2">
-                      {/* Previous Button */}
                       <button
                         type="button"
                         disabled={currentPage === 1}
@@ -427,7 +392,6 @@ const Products = () => {
                         <ChevronLeft size={16} />
                       </button>
 
-                      {/* Page Numbers */}
                       {Array.from({ length: totalPages }).map((_, idx) => {
                         const pageNum = idx + 1;
                         const isActive = pageNum === currentPage;
@@ -447,7 +411,6 @@ const Products = () => {
                         );
                       })}
 
-                      {/* Next Button */}
                       <button
                         type="button"
                         disabled={currentPage === totalPages}
@@ -468,7 +431,6 @@ const Products = () => {
         </div>
       </main>
 
-      {/* ── Toast Feedback Notification ── */}
       {toastMessage && (
         <div className="fixed bottom-6 right-6 bg-[#292524] text-white px-5 py-3 rounded-xl shadow-xl flex items-center gap-3 z-50 text-sm font-medium animate-bounce">
           <Check size={16} className="text-[#16A34A]" />

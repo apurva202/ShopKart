@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
-import { useNavigate } from "react-router-dom";
 import heroImg from "../assets/register_hero.png";
 
 const Register = () => {
@@ -48,7 +47,6 @@ const Register = () => {
       className="flex min-h-screen font-sans"
       style={{ backgroundColor: "#FAF7F2" }}
     >
-      {/* ── LEFT PANEL ── */}
       <div
         className="hidden lg:block w-[50%] shrink-0 relative overflow-hidden"
         style={{
@@ -58,18 +56,15 @@ const Register = () => {
         }}
       />
 
-      {/* ── RIGHT PANEL — warm cream bg with floating card ── */}
       <div
         className="flex flex-1 items-center justify-center px-8 py-6"
         style={{ backgroundColor: "#FAF7F2" }}
       >
         <div className="w-full max-w-112.5 bg-white rounded-2xl shadow-lg px-10 py-7">
-          {/* Eyebrow */}
           <p className="text-xs font-bold tracking-[2.5px] uppercase text-amber-600 mb-2.5">
             Create Your Account
           </p>
 
-          {/* Title */}
           <h2 className="text-[28px] font-extrabold text-stone-900 tracking-tight mb-1.5">
             Join ShopKart today
           </h2>
@@ -77,7 +72,6 @@ const Register = () => {
             Start your shopping journey with us
           </p>
 
-          {/* Error Banner */}
           {error && (
             <div className="flex items-center gap-3 bg-red-50 border border-red-200 text-red-700 text-sm font-medium rounded-xl px-4 py-3 mb-4 shadow-sm">
               <svg
@@ -97,7 +91,6 @@ const Register = () => {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-3.5">
-            {/* Full Name */}
             <div>
               <label className="block text-[13px] font-semibold text-stone-800 mb-1.5">
                 Full Name
@@ -132,7 +125,6 @@ const Register = () => {
               </div>
             </div>
 
-            {/* Email */}
             <div>
               <label className="block text-[13px] font-semibold text-stone-800 mb-1.5">
                 Email address
@@ -167,7 +159,6 @@ const Register = () => {
               </div>
             </div>
 
-            {/* Phone */}
             <div>
               <label className="block text-[13px] font-semibold text-stone-800 mb-1.5">
                 Mobile number
@@ -202,7 +193,6 @@ const Register = () => {
               </div>
             </div>
 
-            {/* Password */}
             <div>
               <label className="block text-[13px] font-semibold text-stone-800 mb-1.5">
                 Password
@@ -281,7 +271,6 @@ const Register = () => {
               </div>
             </div>
 
-            {/* Submit Button */}
             <button
               id="register-btn"
               type="submit"
@@ -334,10 +323,8 @@ const Register = () => {
             </button>
           </form>
 
-          {/* Divider */}
           <hr className="border-stone-100 mt-5 mb-4" />
 
-          {/* Footer Link */}
           <p className="text-center text-stone-500 text-sm">
             Already have an account?{" "}
             <Link

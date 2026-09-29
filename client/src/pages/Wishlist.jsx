@@ -10,10 +10,10 @@ const Wishlist = () => {
   const [wishlist, setWishlist] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [removingId, setRemovingId] = useState(null);
+  // Set so multiple cards can be "removing" at the same time independently
+  const [removingIds, setRemovingIds] = useState(new Set());
   const [toastMessage, setToastMessage] = useState(null);
 
-  // ── Fetch Wishlist (GET /wishlist) ──
   const fetchWishlist = async () => {
     setLoading(true);
     setError(null);
@@ -36,10 +36,9 @@ const Wishlist = () => {
     fetchWishlist();
   }, []);
 
-  // ── Remove from Wishlist (DELETE /wishlist/:productId) ──
   const handleRemove = async (productId, productName) => {
-    if (removingId === productId) return;
-    setRemovingId(productId);
+    if (removingIds.has(productId)) return;
+    setRemovingIds((prev) => new Set(prev).add(productId));
     try {
       const res = await api.delete(`/wishlist/${productId}`);
       if (res.data && res.data.success) {
@@ -50,7 +49,7 @@ const Wishlist = () => {
     } catch (err) {
       console.error("Error removing from wishlist:", err);
     } finally {
-      setRemovingId(null);
+      setRemovingIds((prev) => { const s = new Set(prev); s.delete(productId); return s; });
     }
   };
 
@@ -65,10 +64,8 @@ const Wishlist = () => {
         color: "#1C1917",
       }}
     >
-      {/* ── Navbar ── */}
       <Navbar />
 
-      {/* ── Page Content ── */}
       <main
         style={{
           flex: 1,
@@ -79,7 +76,7 @@ const Wishlist = () => {
           boxSizing: "border-box",
         }}
       >
-        {/* ── Page Header ── */}
+        {/* Page header */}
         <div style={{ marginBottom: "2rem" }}>
           <h1
             style={{
@@ -117,7 +114,7 @@ const Wishlist = () => {
           )}
         </div>
 
-        {/* ── State 1: Loading Skeleton ── */}
+        {/* Loading skeleton */}
         {loading && (
           <div
             style={{
@@ -186,7 +183,7 @@ const Wishlist = () => {
           </div>
         )}
 
-        {/* ── State 2: Error State ── */}
+        {/* Error state */}
         {!loading && error && (
           <div
             style={{
@@ -250,7 +247,7 @@ const Wishlist = () => {
           </div>
         )}
 
-        {/* ── State 3: Empty State ── */}
+        {/* Empty state */}
         {!loading && !error && wishlist.length === 0 && (
           <div
             style={{
@@ -268,7 +265,6 @@ const Wishlist = () => {
               boxShadow: "0 2px 12px rgba(0,0,0,0.03)",
             }}
           >
-            {/* Heart Circle Badge */}
             <div
               style={{
                 width: "80px",
@@ -329,7 +325,7 @@ const Wishlist = () => {
           </div>
         )}
 
-        {/* ── State 4: Wishlist Cards Grid ── */}
+        {/* Wishlist grid */}
         {!loading && !error && wishlist.length > 0 && (
           <div
             style={{
@@ -341,7 +337,7 @@ const Wishlist = () => {
             {wishlist.map((product) => {
               const isOutOfStock = product.stock === 0;
               const isLowStock = product.stock > 0 && product.stock <= 5;
-              const isRemoving = removingId === product._id;
+              const isRemoving = removingIds.has(product._id);
 
               return (
                 <div
@@ -358,7 +354,6 @@ const Wishlist = () => {
                     transition: "box-shadow 0.2s",
                   }}
                 >
-                  {/* Product Image */}
                   <div
                     style={{
                       position: "relative",
@@ -381,7 +376,7 @@ const Wishlist = () => {
                         objectFit: "cover",
                       }}
                     />
-                    {/* Heart Badge — click to remove */}
+                    {/* Clicking the heart also removes the product */}
                     <button
                       type="button"
                       disabled={isRemoving}
@@ -424,7 +419,6 @@ const Wishlist = () => {
                     </button>
                   </div>
 
-                  {/* Product Details */}
                   <div style={{ marginTop: "0.875rem", flex: 1 }}>
                     <h3
                       title={product.name}
@@ -443,7 +437,6 @@ const Wishlist = () => {
                       {product.name}
                     </h3>
 
-                    {/* Price */}
                     <p
                       style={{
                         margin: "0.375rem 0 0",
@@ -457,7 +450,6 @@ const Wishlist = () => {
                       ₹{Number(product.price).toLocaleString("en-IN")}
                     </p>
 
-                    {/* Category */}
                     <p
                       style={{
                         margin: "0.25rem 0 0",
@@ -469,7 +461,6 @@ const Wishlist = () => {
                       {product.category}
                     </p>
 
-                    {/* Stock Indicator */}
                     <div
                       style={{
                         marginTop: "0.5rem",
@@ -511,7 +502,6 @@ const Wishlist = () => {
                     </div>
                   </div>
 
-                  {/* Action Buttons */}
                   <div
                     style={{
                       marginTop: "1rem",
@@ -520,7 +510,6 @@ const Wishlist = () => {
                       gap: "0.5rem",
                     }}
                   >
-                    {/* View Details */}
                     <button
                       type="button"
                       onClick={() => navigate(`/products/${product._id}`)}
@@ -549,7 +538,6 @@ const Wishlist = () => {
                       View Details
                     </button>
 
-                    {/* Remove from Wishlist */}
                     <button
                       type="button"
                       disabled={isRemoving}
@@ -593,7 +581,7 @@ const Wishlist = () => {
         )}
       </main>
 
-      {/* ── Toast Notification ── */}
+      {/* Toast notification */}
       {toastMessage && (
         <div
           style={{
@@ -618,7 +606,6 @@ const Wishlist = () => {
         </div>
       )}
 
-      {/* ── Footer ── */}
       <footer
         style={{
           textAlign: "center",
