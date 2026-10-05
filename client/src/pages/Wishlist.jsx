@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import api from "../services/api";
-import { Heart, Trash2, ShoppingBag, AlertCircle, Check } from "lucide-react";
+import { Heart, ShoppingBag, AlertCircle, Check } from "lucide-react";
+import WishlistCard from "../components/WishlistCard";
 
 const Wishlist = () => {
   const navigate = useNavigate();
@@ -49,66 +50,30 @@ const Wishlist = () => {
     } catch (err) {
       console.error("Error removing from wishlist:", err);
     } finally {
-      setRemovingIds((prev) => { const s = new Set(prev); s.delete(productId); return s; });
+      setRemovingIds((prev) => {
+        const s = new Set(prev);
+        s.delete(productId);
+        return s;
+      });
     }
   };
 
   return (
-    <div
-      style={{
-        background: "#FAF7F2",
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        fontFamily: "sans-serif",
-        color: "#1C1917",
-      }}
-    >
+    <div className="bg-[#FAF7F2] min-h-screen flex flex-col font-sans text-[#1C1917]">
       <Navbar />
 
-      <main
-        style={{
-          flex: 1,
-          maxWidth: "1280px",
-          width: "100%",
-          margin: "0 auto",
-          padding: "2rem 2rem 3rem",
-          boxSizing: "border-box",
-        }}
-      >
+      <main className="flex-1 max-w-7xl w-full mx-auto px-8 pt-8 pb-12 box-border">
+
         {/* Page header */}
-        <div style={{ marginBottom: "2rem" }}>
-          <h1
-            style={{
-              margin: 0,
-              fontFamily: "Georgia, serif",
-              fontSize: "2.4rem",
-              fontWeight: 700,
-              color: "#1C1917",
-              letterSpacing: "-0.01em",
-              lineHeight: 1,
-            }}
-          >
+        <div className="mb-8">
+          <h1 className="m-0 font-serif text-[2.4rem] font-bold text-[#1C1917] tracking-tight leading-none">
             My Wishlist
           </h1>
-          <p
-            style={{
-              margin: "0.5rem 0 0",
-              fontSize: "0.95rem",
-              color: "#78716C",
-            }}
-          >
+          <p className="m-0 mt-2 text-[0.95rem] text-[#78716C]">
             Products you've saved for later.
           </p>
           {!loading && !error && wishlist.length > 0 && (
-            <p
-              style={{
-                margin: "0.75rem 0 0",
-                fontSize: "0.85rem",
-                fontWeight: 600,
-                color: "#44403C",
-              }}
-            >
+            <p className="m-0 mt-3 text-[0.85rem] font-semibold text-[#44403C]">
               {wishlist.length} {wishlist.length === 1 ? "product" : "products"} saved
             </p>
           )}
@@ -116,68 +81,19 @@ const Wishlist = () => {
 
         {/* Loading skeleton */}
         {loading && (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
-              gap: "1.5rem",
-            }}
-          >
+          <div className="grid gap-6" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))" }}>
             {Array.from({ length: 4 }).map((_, idx) => (
               <div
                 key={idx}
-                style={{
-                  background: "#fff",
-                  borderRadius: "1rem",
-                  border: "1px solid #E5DED5",
-                  padding: "1rem",
-                  animation: "pulse 1.5s ease-in-out infinite",
-                }}
+                className="bg-white rounded-2xl border border-[#E5DED5] p-4 animate-pulse"
               >
-                <div
-                  style={{
-                    width: "100%",
-                    paddingBottom: "75%",
-                    background: "#E7E5E4",
-                    borderRadius: "0.75rem",
-                  }}
-                />
-                <div style={{ marginTop: "1rem" }}>
-                  <div
-                    style={{
-                      height: "14px",
-                      background: "#E7E5E4",
-                      borderRadius: "4px",
-                      width: "75%",
-                      marginBottom: "8px",
-                    }}
-                  />
-                  <div
-                    style={{
-                      height: "18px",
-                      background: "#E7E5E4",
-                      borderRadius: "4px",
-                      width: "50%",
-                      marginBottom: "8px",
-                    }}
-                  />
-                  <div
-                    style={{
-                      height: "10px",
-                      background: "#E7E5E4",
-                      borderRadius: "4px",
-                      width: "35%",
-                    }}
-                  />
+                <div className="w-full bg-[#E7E5E4] rounded-xl" style={{ paddingBottom: "75%" }} />
+                <div className="mt-4">
+                  <div className="h-3.5 bg-[#E7E5E4] rounded w-3/4 mb-2" />
+                  <div className="h-4.5 bg-[#E7E5E4] rounded w-1/2 mb-2" />
+                  <div className="h-2.5 bg-[#E7E5E4] rounded w-[35%]" />
                 </div>
-                <div
-                  style={{
-                    marginTop: "1.2rem",
-                    height: "38px",
-                    background: "#E7E5E4",
-                    borderRadius: "0.75rem",
-                  }}
-                />
+                <div className="mt-5 h-9.5 bg-[#E7E5E4] rounded-xl" />
               </div>
             ))}
           </div>
@@ -185,62 +101,18 @@ const Wishlist = () => {
 
         {/* Error state */}
         {!loading && error && (
-          <div
-            style={{
-              background: "#fff",
-              border: "1px solid #FECACA",
-              borderRadius: "1rem",
-              padding: "3rem 2rem",
-              textAlign: "center",
-              maxWidth: "480px",
-              margin: "0 auto",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "0.75rem",
-            }}
-          >
-            <div
-              style={{
-                width: "56px",
-                height: "56px",
-                borderRadius: "50%",
-                background: "#FEE2E2",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#DC2626",
-              }}
-            >
+          <div className="bg-white border border-[#FECACA] rounded-2xl px-8 py-12 text-center max-w-120 mx-auto flex flex-col items-center gap-3">
+            <div className="w-14 h-14 rounded-full bg-[#FEE2E2] flex items-center justify-center text-[#DC2626]">
               <AlertCircle size={26} />
             </div>
-            <h2
-              style={{
-                margin: 0,
-                fontSize: "1.1rem",
-                fontWeight: 700,
-                color: "#292524",
-              }}
-            >
+            <h2 className="m-0 text-[1.1rem] font-bold text-[#292524]">
               Something went wrong
             </h2>
-            <p style={{ margin: 0, fontSize: "0.875rem", color: "#78716C" }}>
-              {error}
-            </p>
+            <p className="m-0 text-sm text-[#78716C]">{error}</p>
             <button
               type="button"
               onClick={fetchWishlist}
-              style={{
-                marginTop: "0.5rem",
-                background: "#B45309",
-                color: "#fff",
-                border: "none",
-                padding: "0.6rem 1.5rem",
-                borderRadius: "0.75rem",
-                fontWeight: 600,
-                fontSize: "0.875rem",
-                cursor: "pointer",
-              }}
+              className="mt-2 bg-[#B45309] text-white border-none px-6 py-2.5 rounded-xl font-semibold text-sm cursor-pointer hover:bg-[#92400E] transition-colors font-inherit"
             >
               Try Again
             </button>
@@ -249,75 +121,20 @@ const Wishlist = () => {
 
         {/* Empty state */}
         {!loading && !error && wishlist.length === 0 && (
-          <div
-            style={{
-              background: "#fff",
-              border: "1px solid #E5DED5",
-              borderRadius: "1.5rem",
-              padding: "4rem 2rem",
-              textAlign: "center",
-              maxWidth: "520px",
-              margin: "0 auto",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "1rem",
-              boxShadow: "0 2px 12px rgba(0,0,0,0.03)",
-            }}
-          >
-            <div
-              style={{
-                width: "80px",
-                height: "80px",
-                borderRadius: "50%",
-                background: "#FEF3E2",
-                border: "1px solid #E5DED5",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#B45309",
-              }}
-            >
+          <div className="bg-white border border-[#E5DED5] rounded-3xl px-8 py-16 text-center max-w-130 mx-auto flex flex-col items-center gap-4 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+            <div className="w-20 h-20 rounded-full bg-[#FEF3E2] border border-[#E5DED5] flex items-center justify-center text-[#B45309]">
               <Heart size={36} strokeWidth={1.5} />
             </div>
-            <h2
-              style={{
-                margin: 0,
-                fontFamily: "Georgia, serif",
-                fontSize: "1.75rem",
-                fontWeight: 700,
-                color: "#1C1917",
-              }}
-            >
+            <h2 className="m-0 font-serif text-[1.75rem] font-bold text-[#1C1917]">
               Your wishlist is empty
             </h2>
-            <p
-              style={{
-                margin: 0,
-                fontSize: "0.9rem",
-                color: "#78716C",
-                maxWidth: "320px",
-              }}
-            >
+            <p className="m-0 text-[0.9rem] text-[#78716C] max-w-[320px]">
               Save products you love and find them here later.
             </p>
             <button
               type="button"
               onClick={() => navigate("/products")}
-              style={{
-                marginTop: "0.5rem",
-                background: "#B45309",
-                color: "#fff",
-                border: "none",
-                padding: "0.75rem 1.75rem",
-                borderRadius: "0.75rem",
-                fontWeight: 600,
-                fontSize: "0.875rem",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-              }}
+              className="mt-2 bg-[#B45309] text-white border-none px-7 py-3 rounded-xl font-semibold text-sm cursor-pointer flex items-center gap-2 hover:bg-[#92400E] transition-colors font-inherit"
             >
               <ShoppingBag size={17} strokeWidth={2.2} />
               Browse Products
@@ -328,334 +145,38 @@ const Wishlist = () => {
         {/* Wishlist grid */}
         {!loading && !error && wishlist.length > 0 && (
           <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
-              gap: "1.5rem",
-            }}
+            className="grid gap-6"
+            style={{ gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))" }}
           >
-            {wishlist.map((product) => {
-              const isOutOfStock = product.stock === 0;
-              const isLowStock = product.stock > 0 && product.stock <= 5;
-              const isRemoving = removingIds.has(product._id);
-
-              return (
-                <div
-                  key={product._id}
-                  style={{
-                    background: "#fff",
-                    borderRadius: "1rem",
-                    border: "1px solid #E5DED5",
-                    padding: "0.875rem",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                    boxShadow: "0 1px 6px rgba(0,0,0,0.04)",
-                    transition: "box-shadow 0.2s",
-                  }}
-                >
-                  <div
-                    style={{
-                      position: "relative",
-                      width: "100%",
-                      paddingBottom: "75%",
-                      background: "#F7F5F0",
-                      borderRadius: "0.75rem",
-                      overflow: "hidden",
-                    }}
-                  >
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      loading="lazy"
-                      style={{
-                        position: "absolute",
-                        inset: 0,
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                      }}
-                    />
-                    {/* Clicking the heart also removes the product */}
-                    <button
-                      type="button"
-                      disabled={isRemoving}
-                      onClick={() => handleRemove(product._id, product.name)}
-                      title="Remove from wishlist"
-                      style={{
-                        position: "absolute",
-                        top: "0.6rem",
-                        right: "0.6rem",
-                        width: "32px",
-                        height: "32px",
-                        borderRadius: "50%",
-                        background: "rgba(255,255,255,0.95)",
-                        border: "1px solid rgba(0,0,0,0.05)",
-                        boxShadow: "0 2px 6px rgba(0,0,0,0.12)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        cursor: isRemoving ? "wait" : "pointer",
-                        opacity: isRemoving ? 0.6 : 1,
-                        padding: 0,
-                        transition: "transform 0.15s, background 0.15s",
-                      }}
-                      onMouseEnter={(e) => {
-                        if (!isRemoving) {
-                          e.currentTarget.style.transform = "scale(1.1)";
-                          e.currentTarget.style.background = "#FEE2E2";
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = "scale(1)";
-                        e.currentTarget.style.background = "rgba(255,255,255,0.95)";
-                      }}
-                    >
-                      <Heart
-                        size={16}
-                        strokeWidth={2}
-                        style={{ fill: "#DC2626", color: "#DC2626" }}
-                      />
-                    </button>
-                  </div>
-
-                  <div style={{ marginTop: "0.875rem", flex: 1 }}>
-                    <h3
-                      title={product.name}
-                      style={{
-                        margin: 0,
-                        fontWeight: 600,
-                        fontSize: "0.95rem",
-                        color: "#1C1917",
-                        lineHeight: 1.3,
-                        display: "-webkit-box",
-                        WebkitLineClamp: 1,
-                        WebkitBoxOrient: "vertical",
-                        overflow: "hidden",
-                      }}
-                    >
-                      {product.name}
-                    </h3>
-
-                    <p
-                      style={{
-                        margin: "0.375rem 0 0",
-                        fontWeight: 700,
-                        fontSize: "1.15rem",
-                        color: "#DC2626",
-                        lineHeight: 1,
-                        letterSpacing: "-0.02em",
-                      }}
-                    >
-                      ₹{Number(product.price).toLocaleString("en-IN")}
-                    </p>
-
-                    <p
-                      style={{
-                        margin: "0.25rem 0 0",
-                        fontSize: "0.75rem",
-                        color: "#78716C",
-                        fontWeight: 400,
-                      }}
-                    >
-                      {product.category}
-                    </p>
-
-                    <div
-                      style={{
-                        marginTop: "0.5rem",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "0.375rem",
-                        fontSize: "0.75rem",
-                        fontWeight: 500,
-                      }}
-                    >
-                      <span
-                        style={{
-                          width: "8px",
-                          height: "8px",
-                          borderRadius: "50%",
-                          flexShrink: 0,
-                          background: isOutOfStock
-                            ? "#DC2626"
-                            : isLowStock
-                            ? "#D97706"
-                            : "#16A34A",
-                        }}
-                      />
-                      <span
-                        style={{
-                          color: isOutOfStock
-                            ? "#DC2626"
-                            : isLowStock
-                            ? "#D97706"
-                            : "#16A34A",
-                        }}
-                      >
-                        {isOutOfStock
-                          ? "Out of Stock"
-                          : isLowStock
-                          ? "Low Stock"
-                          : "In Stock"}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div
-                    style={{
-                      marginTop: "1rem",
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "0.5rem",
-                    }}
-                  >
-                    <button
-                      type="button"
-                      onClick={() => navigate(`/products/${product._id}`)}
-                      style={{
-                        width: "100%",
-                        padding: "0.6rem 0.75rem",
-                        borderRadius: "0.75rem",
-                        fontWeight: 600,
-                        fontSize: "0.875rem",
-                        color: "#B45309",
-                        background: "#fff",
-                        border: "1.5px solid #E5DED5",
-                        cursor: "pointer",
-                        transition: "all 0.15s",
-                        fontFamily: "inherit",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.target.style.background = "#FEF3E2";
-                        e.target.style.borderColor = "#D97706";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.background = "#fff";
-                        e.target.style.borderColor = "#E5DED5";
-                      }}
-                    >
-                      View Details
-                    </button>
-
-                    <button
-                      type="button"
-                      disabled={isRemoving}
-                      onClick={() => handleRemove(product._id, product.name)}
-                      style={{
-                        width: "100%",
-                        padding: "0.45rem 0.75rem",
-                        borderRadius: "0.75rem",
-                        fontWeight: 500,
-                        fontSize: "0.8rem",
-                        color: "#DC2626",
-                        background: "transparent",
-                        border: "none",
-                        cursor: isRemoving ? "wait" : "pointer",
-                        opacity: isRemoving ? 0.6 : 1,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: "0.375rem",
-                        transition: "background 0.15s",
-                        fontFamily: "inherit",
-                      }}
-                      onMouseEnter={(e) => {
-                        if (!isRemoving)
-                          e.currentTarget.style.background = "#FEE2E2";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = "transparent";
-                      }}
-                    >
-                      <Trash2 size={14} />
-                      <span>
-                        {isRemoving ? "Removing..." : "Remove from Wishlist"}
-                      </span>
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
+            {wishlist.map((product) => (
+              <WishlistCard
+                key={product._id}
+                product={product}
+                isRemoving={removingIds.has(product._id)}
+                onRemove={handleRemove}
+              />
+            ))}
           </div>
         )}
       </main>
 
       {/* Toast notification */}
       {toastMessage && (
-        <div
-          style={{
-            position: "fixed",
-            bottom: "1.5rem",
-            right: "1.5rem",
-            background: "#292524",
-            color: "#fff",
-            padding: "0.75rem 1.25rem",
-            borderRadius: "0.75rem",
-            boxShadow: "0 8px 24px rgba(0,0,0,0.18)",
-            display: "flex",
-            alignItems: "center",
-            gap: "0.75rem",
-            fontSize: "0.875rem",
-            fontWeight: 500,
-            zIndex: 50,
-          }}
-        >
-          <Check size={16} style={{ color: "#16A34A" }} />
+        <div className="fixed bottom-6 right-6 bg-[#292524] text-white px-5 py-3 rounded-xl shadow-xl flex items-center gap-3 z-50 text-sm font-medium">
+          <Check size={16} className="text-[#16A34A]" />
           <span>{toastMessage}</span>
         </div>
       )}
 
-      <footer
-        style={{
-          textAlign: "center",
-          padding: "2rem 1rem 1.5rem",
-          marginTop: "auto",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "0.75rem",
-          }}
-        >
-          <div
-            style={{
-              flex: 1,
-              maxWidth: "80px",
-              height: "1px",
-              background: "#000",
-            }}
-          />
-          <p
-            style={{
-              margin: 0,
-              fontStyle: "italic",
-              fontSize: "0.9rem",
-              color: "#000",
-            }}
-          >
+      <footer className="text-center px-4 py-8 mt-auto">
+        <div className="flex items-center justify-center gap-3">
+          <div className="flex-1 max-w-20 h-px bg-black" />
+          <p className="m-0 italic text-black text-[0.9rem]">
             &ldquo;Good things, closer to you.&rdquo;
           </p>
-          <div
-            style={{
-              flex: 1,
-              maxWidth: "80px",
-              height: "1px",
-              background: "#000",
-            }}
-          />
+          <div className="flex-1 max-w-20 h-px bg-black" />
         </div>
-        <p
-          style={{
-            margin: "0.25rem 0 0",
-            fontSize: "0.78rem",
-            color: "#000",
-            fontWeight: 500,
-          }}
-        >
+        <p className="m-0 mt-1 text-black text-[0.78rem] font-medium">
           — ShopKart
         </p>
       </footer>
