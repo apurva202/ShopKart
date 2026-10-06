@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import api from "../services/api";
+import { useCart } from "../context/CartContext";
 import {
   ArrowLeft,
   Heart,
@@ -22,7 +23,9 @@ const ProductDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
+  const [isAdding, setIsAdding] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [isSavingWishlist, setIsSavingWishlist] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
@@ -99,12 +102,18 @@ const ProductDetails = () => {
     }
   };
 
-  const handleAddToCart = () => {
-    if (!product || product.stock === 0) return;
-    setToastMessage(`Added ${quantity}x "${product.name}" to cart!`);
-    setTimeout(() => {
-      setToastMessage(null);
-    }, 3000);
+  const handleAddToCart = async () => {
+    if (!product || product.stock === 0 || isAdding) return;
+    setIsAdding(true);
+    try {
+      await addToCart(product._id, quantity);  // single call — backend handles quantity
+      setToastMessage(`Added ${quantity}x "${product.name}" to cart!`);
+      setTimeout(() => setToastMessage(null), 3000);
+    } catch (err) {
+      console.error("Add to cart failed:", err);
+    } finally {
+      setIsAdding(false);
+    }
   };
 
   const isOutOfStock = product?.stock === 0;
@@ -274,16 +283,20 @@ const ProductDetails = () => {
 
                 <button
                   type="button"
-                  disabled={isOutOfStock}
+                  disabled={isOutOfStock || isAdding}
                   onClick={handleAddToCart}
                   className={`flex-1 py-3 px-6 rounded-xl font-semibold text-base flex items-center justify-center gap-2.5 transition-all border-none font-inherit ${
                     isOutOfStock
                       ? "bg-[#E7E5E4] text-[#A8A29E] cursor-not-allowed"
+                      : isAdding
+                      ? "bg-[#D97706] text-white cursor-wait"
                       : "bg-[#B45309] hover:bg-[#92400E] text-white shadow-md active:scale-[0.99] cursor-pointer"
                   }`}
                 >
                   <ShoppingCart size={18} strokeWidth={2.2} />
-                  <span>{isOutOfStock ? "Out of Stock" : "Add to Cart"}</span>
+                  <span>
+                    {isOutOfStock ? "Out of Stock" : isAdding ? "Adding..." : "Add to Cart"}
+                  </span>
                 </button>
               </div>
 

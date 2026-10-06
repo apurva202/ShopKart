@@ -2,16 +2,18 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Heart, ShoppingCart } from "lucide-react";
 import api from "../services/api";
+import { useCart } from "../context/CartContext";
 
 const ProductCard = ({
   product,
-  onAddToCart,
   initialWishlisted = false,
   onWishlistToggle,
 }) => {
   const navigate = useNavigate();
+  const { addToCart } = useCart();
   const [isWishlisted, setIsWishlisted] = useState(initialWishlisted);
   const [isSaving, setIsSaving] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
 
   // Sync if parent updates the prop (e.g. wishlist loaded after mount)
   useEffect(() => {
@@ -59,11 +61,16 @@ const ProductCard = ({
     }
   };
 
-  const handleCartClick = (e) => {
+  const handleCartClick = async (e) => {
     e.stopPropagation();
-    if (isOutOfStock) return;
-    if (onAddToCart) {
-      onAddToCart(product);
+    if (isOutOfStock || isAdding) return;
+    setIsAdding(true);
+    try {
+      await addToCart(product._id);
+    } catch (err) {
+      console.error("Add to cart failed:", err);
+    } finally {
+      setIsAdding(false);
     }
   };
 
@@ -139,16 +146,20 @@ const ProductCard = ({
 
       <button
         type="button"
-        disabled={isOutOfStock}
+        disabled={isOutOfStock || isAdding}
         onClick={handleCartClick}
         className={`w-full mt-3.5 py-2 px-3 rounded-xl font-semibold text-[0.875rem] flex items-center justify-center gap-2 transition-colors border-none font-inherit ${
           isOutOfStock
             ? "bg-[#E7E5E4] text-[#A8A29E] cursor-not-allowed"
+            : isAdding
+            ? "bg-[#D97706] text-white cursor-wait"
             : "bg-[#B45309] hover:bg-[#92400E] text-white cursor-pointer active:scale-[0.99]"
         }`}
       >
         <ShoppingCart size={15} strokeWidth={2.2} />
-        <span>{isOutOfStock ? "Out of Stock" : "Add to Cart"}</span>
+        <span>
+          {isOutOfStock ? "Out of Stock" : isAdding ? "Adding..." : "Add to Cart"}
+        </span>
       </button>
     </div>
   );

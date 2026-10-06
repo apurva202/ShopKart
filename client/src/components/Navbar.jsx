@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
 
 const getInitials = (name = "") => {
   const parts = name.trim().split(" ");
@@ -21,11 +22,13 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, setUser } = useAuth();
+  const { totalItems } = useCart();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const isHome = location.pathname === "/home";
   const isProducts = location.pathname.startsWith("/products");
   const isWishlist = location.pathname === "/wishlist";
+  const isCart = location.pathname === "/cart";
 
   const handleLogout = async () => {
     try {
@@ -99,12 +102,19 @@ const Navbar = () => {
       </div>
 
       <div className="flex items-center gap-4 shrink-0">
-        <div className="relative cursor-default">
+        {/* Cart icon — clickable, live badge */}
+        <Link
+          to="/cart"
+          className="relative cursor-pointer no-underline flex items-center justify-center"
+          aria-label={`Cart with ${totalItems} items`}
+        >
           <ShoppingCart size={24} color="#292524" strokeWidth={1.8} />
-          <span className="absolute top-[-0.45rem] right-[-0.45rem] bg-[#D97706] text-white rounded-full w-[1.1rem] h-[1.1rem] flex items-center justify-center text-[0.6rem] font-bold">
-            0
-          </span>
-        </div>
+          {totalItems > 0 && (
+            <span className="absolute -top-1.5 -right-2 bg-[#D97706] text-white rounded-full min-w-5 h-5 px-1 flex items-center justify-center text-[0.65rem] font-bold shadow-sm leading-none border-2 border-white">
+              {totalItems}
+            </span>
+          )}
+        </Link>
 
         <div ref={dropdownRef} className="relative">
           <button
