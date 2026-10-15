@@ -43,24 +43,16 @@ const Register = () => {
   };
 
   return (
-    <div
-      className="flex min-h-screen font-sans"
-      style={{ backgroundColor: "#FAF7F2" }}
-    >
+    <div className="flex min-h-screen font-sans bg-stone-50">
       <div
-        className="hidden lg:block w-[50%] shrink-0 relative overflow-hidden"
+        className="hidden lg:block w-1/2 shrink-0 relative overflow-hidden bg-cover bg-top-left"
         style={{
           backgroundImage: `url(${heroImg})`,
-          backgroundSize: "cover",
-          backgroundPosition: "left top",
         }}
       />
 
-      <div
-        className="flex flex-1 items-center justify-center px-8 py-6"
-        style={{ backgroundColor: "#FAF7F2" }}
-      >
-        <div className="w-full max-w-112.5 bg-white rounded-2xl shadow-lg px-10 py-7">
+      <div className="flex flex-1 items-center justify-center px-8 py-6 bg-stone-50">
+        <div className="w-full max-w-md bg-white rounded-2xl shadow-lg px-10 py-7">
           <p className="text-xs font-bold tracking-[2.5px] uppercase text-amber-600 mb-2.5">
             Create Your Account
           </p>
@@ -275,7 +267,7 @@ const Register = () => {
               id="register-btn"
               type="submit"
               disabled={loading}
-              className="w-full bg-[#B45309] hover:bg-[#92400e] active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold text-[15px] py-3.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-[0_4px_16px_rgba(180,83,9,0.30)] hover:shadow-[0_6px_20px_rgba(146,64,14,0.38)] cursor-pointer"
+              className="w-full bg-amber-700 hover:bg-amber-800 active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold text-[15px] py-3.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-sm cursor-pointer"
             >
               {loading ? (
                 <>

@@ -7,6 +7,7 @@ import {
   Heart,
   ChevronDown,
   LogOut,
+  Package,
 } from "lucide-react";
 import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
@@ -154,10 +155,21 @@ const Navbar = () => {
 
               <div className="h-px bg-[#E5DED5]" />
 
+              <Link
+                to="/orders"
+                onClick={() => setDropdownOpen(false)}
+                className="w-full flex items-center gap-[0.65rem] px-4 py-2.5 bg-transparent hover:bg-[#FAF7F2] text-[0.875rem] text-[#292524] font-inherit text-left transition-colors no-underline box-border"
+              >
+                <Package size={16} color="#78716C" strokeWidth={2} />
+                My Orders
+              </Link>
+
+              <div className="h-px bg-[#E5DED5]" />
+
               <button
                 id="logout-btn"
                 onClick={handleLogout}
-                className="w-full flex items-center gap-[0.65rem] px-4 py-3 bg-transparent hover:bg-[#FAF7F2] border-none cursor-pointer text-[0.875rem] text-[#292524] font-inherit text-left transition-colors"
+                className="w-full flex items-center gap-[0.65rem] px-4 py-2.5 bg-transparent hover:bg-[#FAF7F2] border-none cursor-pointer text-[0.875rem] text-[#292524] font-inherit text-left transition-colors"
               >
                 <LogOut size={16} color="#78716C" strokeWidth={2} />
                 Logout

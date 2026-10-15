@@ -55,6 +55,10 @@ export const CartProvider = ({ children }) => {
     return res.data;
   };
 
+  const clearCartState = () => {
+    setCart([]);
+  };
+
   // Load cart once on mount
   useEffect(() => {
     refreshCart();
@@ -72,6 +76,7 @@ export const CartProvider = ({ children }) => {
         addToCart,
         updateQuantity,
         removeFromCart,
+        clearCartState,
       }}
     >
       {children}

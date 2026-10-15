@@ -8,6 +8,9 @@ import Products from './pages/Products'
 import ProductDetails from './pages/ProductDetails'
 import Wishlist from './pages/Wishlist'
 import Cart from './pages/Cart'
+import Checkout from './pages/Checkout'
+import OrderSuccess from './pages/OrderSuccess'
+import Orders from './pages/Orders'
 import ProtectedRoute from './components/ProtectedRoute'
 import PublicRoute from './components/PublicRoute'
 
@@ -25,6 +28,9 @@ function App() {
             <Route path="/products/:id" element={<ProtectedRoute><ProductDetails /></ProtectedRoute>} />
             <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
             <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
+            <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+            <Route path="/order-success/:id" element={<ProtectedRoute><OrderSuccess /></ProtectedRoute>} />
+            <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
           </Routes>
         </BrowserRouter>
       </CartProvider>

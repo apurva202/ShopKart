@@ -1,19 +1,24 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import WishlistCard from "../components/WishlistCard";
 import api from "../services/api";
 import { Heart, ShoppingBag, AlertCircle, Check } from "lucide-react";
-import WishlistCard from "../components/WishlistCard";
 
 const Wishlist = () => {
   const navigate = useNavigate();
-
   const [wishlist, setWishlist] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  // Set so multiple cards can be "removing" at the same time independently
   const [removingIds, setRemovingIds] = useState(new Set());
   const [toastMessage, setToastMessage] = useState(null);
+
+  const showToast = (message) => {
+    setToastMessage(message);
+    setTimeout(() => {
+      setToastMessage(null);
+    }, 2800);
+  };
 
   const fetchWishlist = async () => {
     setLoading(true);
@@ -21,13 +26,16 @@ const Wishlist = () => {
     try {
       const res = await api.get("/wishlist");
       if (res.data && res.data.success) {
-        setWishlist(res.data.wishlist || []);
+        setWishlist(res.data.wishlist);
       } else {
-        setWishlist([]);
+        setError(res.data?.message || "Failed to load wishlist");
       }
     } catch (err) {
       console.error("Error fetching wishlist:", err);
-      setError("Unable to load wishlist. Please check your connection.");
+      setError(
+        err.response?.data?.message ||
+          "Could not load your wishlist. Please try again."
+      );
     } finally {
       setLoading(false);
     }
@@ -38,14 +46,12 @@ const Wishlist = () => {
   }, []);
 
   const handleRemove = async (productId, productName) => {
-    if (removingIds.has(productId)) return;
     setRemovingIds((prev) => new Set(prev).add(productId));
     try {
       const res = await api.delete(`/wishlist/${productId}`);
       if (res.data && res.data.success) {
-        setWishlist((prev) => prev.filter((item) => item._id !== productId));
-        setToastMessage(`Removed "${productName}" from wishlist`);
-        setTimeout(() => setToastMessage(null), 3000);
+        setWishlist((prev) => prev.filter((p) => p._id !== productId));
+        showToast(`Removed "${productName}" from wishlist`);
       }
     } catch (err) {
       console.error("Error removing from wishlist:", err);
@@ -59,21 +65,20 @@ const Wishlist = () => {
   };
 
   return (
-    <div className="bg-[#FAF7F2] min-h-screen flex flex-col font-sans text-[#1C1917]">
+    <div className="bg-stone-50 min-h-screen flex flex-col font-sans text-stone-900">
       <Navbar />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-8 pt-8 pb-12 box-border">
-
         {/* Page header */}
         <div className="mb-8">
-          <h1 className="m-0 font-serif text-[2.4rem] font-bold text-[#1C1917] tracking-tight leading-none">
+          <h1 className="m-0 font-serif text-[2.4rem] font-bold text-stone-900 tracking-tight leading-none">
             My Wishlist
           </h1>
-          <p className="m-0 mt-2 text-[0.95rem] text-[#78716C]">
+          <p className="m-0 mt-2 text-[0.95rem] text-stone-500">
             Products you've saved for later.
           </p>
           {!loading && !error && wishlist.length > 0 && (
-            <p className="m-0 mt-3 text-[0.85rem] font-semibold text-[#44403C]">
+            <p className="m-0 mt-3 text-[0.85rem] font-semibold text-stone-700">
               {wishlist.length} {wishlist.length === 1 ? "product" : "products"} saved
             </p>
           )}
@@ -81,19 +86,19 @@ const Wishlist = () => {
 
         {/* Loading skeleton */}
         {loading && (
-          <div className="grid gap-6" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))" }}>
+          <div className="grid gap-6 grid-cols-[repeat(auto-fill,minmax(240px,1fr))]">
             {Array.from({ length: 4 }).map((_, idx) => (
               <div
                 key={idx}
-                className="bg-white rounded-2xl border border-[#E5DED5] p-4 animate-pulse"
+                className="bg-white rounded-2xl border border-stone-200 p-4 animate-pulse"
               >
-                <div className="w-full bg-[#E7E5E4] rounded-xl" style={{ paddingBottom: "75%" }} />
+                <div className="w-full bg-stone-200 rounded-xl aspect-4/3" />
                 <div className="mt-4">
-                  <div className="h-3.5 bg-[#E7E5E4] rounded w-3/4 mb-2" />
-                  <div className="h-4.5 bg-[#E7E5E4] rounded w-1/2 mb-2" />
-                  <div className="h-2.5 bg-[#E7E5E4] rounded w-[35%]" />
+                  <div className="h-3.5 bg-stone-200 rounded w-3/4 mb-2" />
+                  <div className="h-4.5 bg-stone-200 rounded w-1/2 mb-2" />
+                  <div className="h-2.5 bg-stone-200 rounded w-[35%]" />
                 </div>
-                <div className="mt-5 h-9.5 bg-[#E7E5E4] rounded-xl" />
+                <div className="mt-5 h-9.5 bg-stone-200 rounded-xl" />
               </div>
             ))}
           </div>
@@ -101,18 +106,18 @@ const Wishlist = () => {
 
         {/* Error state */}
         {!loading && error && (
-          <div className="bg-white border border-[#FECACA] rounded-2xl px-8 py-12 text-center max-w-120 mx-auto flex flex-col items-center gap-3">
-            <div className="w-14 h-14 rounded-full bg-[#FEE2E2] flex items-center justify-center text-[#DC2626]">
+          <div className="bg-white border border-red-200 rounded-2xl px-8 py-12 text-center max-w-120 mx-auto flex flex-col items-center gap-3">
+            <div className="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center text-red-600">
               <AlertCircle size={26} />
             </div>
-            <h2 className="m-0 text-[1.1rem] font-bold text-[#292524]">
+            <h2 className="m-0 text-[1.1rem] font-bold text-stone-900">
               Something went wrong
             </h2>
-            <p className="m-0 text-sm text-[#78716C]">{error}</p>
+            <p className="m-0 text-sm text-stone-500">{error}</p>
             <button
               type="button"
               onClick={fetchWishlist}
-              className="mt-2 bg-[#B45309] text-white border-none px-6 py-2.5 rounded-xl font-semibold text-sm cursor-pointer hover:bg-[#92400E] transition-colors font-inherit"
+              className="mt-2 bg-amber-700 text-white border-none px-6 py-2.5 rounded-xl font-semibold text-sm cursor-pointer hover:bg-amber-800 transition-colors font-inherit"
             >
               Try Again
             </button>
@@ -121,20 +126,20 @@ const Wishlist = () => {
 
         {/* Empty state */}
         {!loading && !error && wishlist.length === 0 && (
-          <div className="bg-white border border-[#E5DED5] rounded-3xl px-8 py-16 text-center max-w-130 mx-auto flex flex-col items-center gap-4 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
-            <div className="w-20 h-20 rounded-full bg-[#FEF3E2] border border-[#E5DED5] flex items-center justify-center text-[#B45309]">
+          <div className="bg-white border border-stone-200 rounded-3xl px-8 py-16 text-center max-w-130 mx-auto flex flex-col items-center gap-4 shadow-sm my-auto">
+            <div className="w-20 h-20 rounded-full bg-amber-50 border border-stone-200 flex items-center justify-center text-amber-700">
               <Heart size={36} strokeWidth={1.5} />
             </div>
-            <h2 className="m-0 font-serif text-[1.75rem] font-bold text-[#1C1917]">
+            <h2 className="m-0 font-serif text-[1.75rem] font-bold text-stone-900">
               Your wishlist is empty
             </h2>
-            <p className="m-0 text-[0.9rem] text-[#78716C] max-w-[320px]">
+            <p className="m-0 text-[0.9rem] text-stone-500 max-w-[320px]">
               Save products you love and find them here later.
             </p>
             <button
               type="button"
               onClick={() => navigate("/products")}
-              className="mt-2 bg-[#B45309] text-white border-none px-7 py-3 rounded-xl font-semibold text-sm cursor-pointer flex items-center gap-2 hover:bg-[#92400E] transition-colors font-inherit"
+              className="mt-2 bg-amber-700 text-white border-none px-7 py-3 rounded-xl font-semibold text-sm cursor-pointer flex items-center gap-2 hover:bg-amber-800 transition-colors font-inherit"
             >
               <ShoppingBag size={17} strokeWidth={2.2} />
               Browse Products
@@ -144,10 +149,7 @@ const Wishlist = () => {
 
         {/* Wishlist grid */}
         {!loading && !error && wishlist.length > 0 && (
-          <div
-            className="grid gap-6"
-            style={{ gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))" }}
-          >
+          <div className="grid gap-6 grid-cols-[repeat(auto-fill,minmax(240px,1fr))]">
             {wishlist.map((product) => (
               <WishlistCard
                 key={product._id}
@@ -162,8 +164,8 @@ const Wishlist = () => {
 
       {/* Toast notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 bg-[#292524] text-white px-5 py-3 rounded-xl shadow-xl flex items-center gap-3 z-50 text-sm font-medium">
-          <Check size={16} className="text-[#16A34A]" />
+        <div className="fixed bottom-6 right-6 bg-stone-800 text-white px-5 py-3 rounded-xl shadow-xl flex items-center gap-3 z-50 text-sm font-medium">
+          <Check size={16} className="text-emerald-600" />
           <span>{toastMessage}</span>
         </div>
       )}

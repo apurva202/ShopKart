@@ -40,24 +40,16 @@ const Login = () => {
   };
 
   return (
-    <div
-      className="flex h-screen overflow-hidden font-sans"
-      style={{ backgroundColor: "#FAF7F2" }}
-    >
+    <div className="flex h-screen overflow-hidden font-sans bg-stone-50">
       <div
-        className="hidden lg:block w-[50%] shrink-0"
+        className="hidden lg:block w-1/2 shrink-0 bg-cover bg-left"
         style={{
           backgroundImage: `url(${heroImg})`,
-          backgroundSize: "cover",
-          backgroundPosition: "left center",
         }}
       />
 
-      <div
-        className="flex flex-1 h-full overflow-y-auto items-center justify-center px-8 py-12"
-        style={{ backgroundColor: "#FAF7F2" }}
-      >
-        <div className="w-full max-w-112.5 bg-white rounded-2xl shadow-lg px-10 py-10">
+      <div className="flex flex-1 h-full overflow-y-auto items-center justify-center px-8 py-12 bg-stone-50">
+        <div className="w-full max-w-md bg-white rounded-2xl shadow-lg px-10 py-10">
           <p className="text-xs font-bold tracking-[2.5px] uppercase text-amber-600 mb-2.5">
             Welcome Back
           </p>
@@ -208,7 +200,7 @@ const Login = () => {
               id="login-btn"
               type="submit"
               disabled={loading}
-              className="w-full bg-[#B45309] hover:bg-[#92400e] active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold text-[15px] py-3.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-[0_4px_16px_rgba(180,83,9,0.30)] hover:shadow-[0_6px_20px_rgba(146,64,14,0.38)] cursor-pointer mt-2"
+              className="w-full bg-amber-700 hover:bg-amber-800 active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold text-[15px] py-3.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-sm cursor-pointer mt-2"
             >
               {loading ? (
                 <>
