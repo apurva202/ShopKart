@@ -17,12 +17,19 @@ const cartRoutes = require("./routes/cart.routes");
 const orderRoutes = require("./routes/order.routes");
 
 const app = express();
-const Port = 8085;
+const Port = process.env.PORT || 8085;
 
 const dbUrl = process.env.dbUrl;
 
+// Trust reverse proxy (needed for secure cookies on Render, Railway, etc.)
+app.set("trust proxy", 1);
+
+const allowedOrigins = process.env.NODE_ENV === "production"
+  ? [process.env.CLIENT_URL].filter(Boolean)
+  : ['http://localhost:5173', process.env.CLIENT_URL].filter(Boolean);
+
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: allowedOrigins,
   credentials: true,
 }));
 app.use(express.json());
